@@ -193,16 +193,17 @@ class Game(pyglet.window.Window):
         if self.piece is not None:
             for i in range(len(self.piece.matrix)):
                 for j in range(len(self.piece.matrix[i])):
-                    value = self.piece.matrix[i][j]
-                    if value != 0:
-                        x = (self.piece.x + j) * self.scale
-                        y = (self.piece.y + (len(self.piece.matrix) - i - 1)) * self.scale
-                        rectangle = pyglet.shapes.Rectangle(
-                            x, y,
-                            self.scale, self.scale,
-                            PieceType.get_color(PieceType(value))
-                        )
-                        rectangle.draw()
+                    if i < len(self.board) and j < len(self.board[i]):
+                        value = self.piece.matrix[i][j]
+                        if value != 0:
+                            x = (self.piece.x + j) * self.scale
+                            y = (self.piece.y + (len(self.piece.matrix) - i - 1)) * self.scale
+                            rectangle = pyglet.shapes.Rectangle(
+                                x, y,
+                                self.scale, self.scale,
+                                PieceType.get_color(PieceType(value))
+                            )
+                            rectangle.draw()
         for i in range(len(self.board)):
             for j in range(len(self.board[i])):
                 value = self.board[i][j]
