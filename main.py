@@ -28,10 +28,13 @@ class Game(pyglet.window.Window):
         self.media_player.loop = True
         self.media_player.queue(self.theme)
         self.media_player.play()
-        self.pressed_keys = pyglet.window.key.KeyStateHandler()
+        self.pressed_keys = {}
+        self.controller = pyglet.input.get_controllers()[0]
+        self.controller.open()
+        self.controller.on_button_press = self.on_button_press
 
     def on_update(self, dt):
-        if (time.time() - self.last_time > 0.1  and self.pressed_keys[pyglet.window.key.S]) \
+        if (time.time() - self.last_time > 0.1 and ((pyglet.window.key.S in self.pressed_keys and self.pressed_keys[pyglet.window.key.S]) or self.controller.a)) \
                 or (time.time() - self.last_time >= 1 - min(0.9, (self.level ** 0.75) * 0.15)):
             self.last_time = time.time()
             if self.piece is not None:
@@ -140,16 +143,33 @@ class Game(pyglet.window.Window):
                     if self.board[row][column] != 0:
                         self.close()
 
+    def on_button_press(self, controller, button_name):
+        if button_name == 'x':
+            self.on_key_press(pyglet.window.key.A, None)
+        elif button_name == 'b':
+            self.on_key_press(pyglet.window.key.D, None)
+        elif button_name == 'a':
+            self.on_key_press(pyglet.window.key.SPACE, None)
+        elif button_name == 'leftshoulder':
+            self.on_key_press(pyglet.window.key.Q, None)
+        elif button_name == 'rightshoulder':
+            self.on_key_press(pyglet.window.key.E, None)
+
     def on_key_press(self, symbol, modifiers):
         if symbol is pyglet.window.key.Q:
+            self.controller.rumble_play_weak(duration=0.1)
             self.rotate_left()
         elif symbol is pyglet.window.key.E:
+            self.controller.rumble_play_weak(duration=0.1)
             self.rotate_right()
         if symbol is pyglet.window.key.A:
+            self.controller.rumble_play_weak(duration=0.1)
             self.move_piece(-1, 0)
         elif symbol is pyglet.window.key.D:
+            self.controller.rumble_play_weak(duration=0.1)
             self.move_piece(1, 0)
         elif symbol is pyglet.window.key.SPACE:
+            self.controller.rumble_play_strong(duration=0.2)
             temp = deepcopy(self.piece)
             while self.check_placement(temp):
                 self.piece = deepcopy(temp)
