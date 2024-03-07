@@ -36,13 +36,16 @@ class Game(pyglet.window.Window):
             self.controller.open()
             self.controller.on_button_press = self.on_button_press
 
+        self.paused = False
+
     def on_update(self, dt):
-        if (time.time() - self.last_time > 0.1 and ((pyglet.window.key.S in self.pressed_keys and self.pressed_keys[pyglet.window.key.S]) or (self.controller is not None and self.controller.a))) \
-                or (time.time() - self.last_time >= 1 - min(0.9, (self.level ** 0.75) * 0.15)):
-            self.last_time = time.time()
-            if self.piece is not None:
-                self.move_piece(0, -1)
-        self.set_caption(f'[Tetris] Level: {self.level} Score: {self.points}')
+        if not self.paused:
+            if (time.time() - self.last_time > 0.1 and ((pyglet.window.key.S in self.pressed_keys and self.pressed_keys[pyglet.window.key.S]) or (self.controller is not None and self.controller.a))) \
+                    or (time.time() - self.last_time >= 1 - min(0.9, (self.level ** 0.75) * 0.15)):
+                self.last_time = time.time()
+                if self.piece is not None:
+                    self.move_piece(0, -1)
+            self.set_caption(f'[Tetris] Level: {self.level} Score: {self.points}')
 
     def rotate_left(self):
         temp = deepcopy(self.piece)
@@ -183,6 +186,8 @@ class Game(pyglet.window.Window):
                 self.piece = deepcopy(temp)
                 temp.y -= 1
             self.kill_piece()
+        elif symbol is pyglet.window.key.P:
+            self.paused = not self.paused
         self.pressed_keys[symbol] = True
 
     def on_key_release(self, symbol, modifiers):
