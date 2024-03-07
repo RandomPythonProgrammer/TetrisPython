@@ -1,5 +1,4 @@
 from enum import Enum
-from copy import deepcopy
 
 
 class Piece:
@@ -48,7 +47,7 @@ class Piece:
                 [0, 0, 0]
             ]
 
-        self.x = int((10 - len(self.matrix[0]))/2)
+        self.x = int((10 - len(self.matrix[0])) / 2)
         self.y = 20 - len(self.matrix)
 
 

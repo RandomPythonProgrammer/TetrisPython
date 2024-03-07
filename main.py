@@ -1,8 +1,10 @@
 import random
-import pyglet
-from piece import Piece, PieceType
 import time
 from copy import deepcopy
+
+import pyglet
+
+from piece import Piece, PieceType
 
 
 class Game(pyglet.window.Window):
@@ -40,7 +42,9 @@ class Game(pyglet.window.Window):
 
     def on_update(self, dt):
         if not self.paused:
-            if (time.time() - self.last_time > 0.1 and ((pyglet.window.key.S in self.pressed_keys and self.pressed_keys[pyglet.window.key.S]) or (self.controller is not None and self.controller.a))) \
+            if (time.time() - self.last_time > 0.1 and (
+                    (pyglet.window.key.S in self.pressed_keys and self.pressed_keys[pyglet.window.key.S]) or (
+                    self.controller is not None and self.controller.a))) \
                     or (time.time() - self.last_time >= 1 - min(0.9, (self.level ** 0.75) * 0.15)):
                 self.last_time = time.time()
                 if self.piece is not None:
